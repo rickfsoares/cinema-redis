@@ -19,6 +19,7 @@ public class CinemaService {
        try (Jedis jedis = connection.getResource()) {
             return jedis.lrange(key, 0, -1);   
         }
+
    }
 
    public void criar(String key, String value) {
@@ -33,17 +34,24 @@ public class CinemaService {
         }       
    }
 
-   public void atualizarElemento(String key, String newValue) {
-        Long index = getIndiceElemento(key, newValue);
+   public boolean atualizarElemento(String key, String oldName, String newName) {
 
-        try (Jedis jedis = connection.getResource()) {
-            jedis.lset(key, index, newValue);
+        Long index = getIndiceElemento(key, oldName);
+        
+        if (index != null) {
+            try (Jedis jedis = connection.getResource()) {
+                jedis.lset(key, index, newName);
+                return true;
+            }
+        } else {
+            return false;
         }
+        
    }
 
-   public void deletarElemento(String key, String value) {
+   public long deletarElemento(String key, String value) {
         try (Jedis jedis = connection.getResource()) {
-            jedis.lrem(key, 1, value);
+            return jedis.lrem(key, 1, value);
         }
    }
 

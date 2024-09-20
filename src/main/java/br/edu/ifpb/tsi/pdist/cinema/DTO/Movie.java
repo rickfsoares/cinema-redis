@@ -6,4 +6,5 @@ import lombok.Data;
 public class Movie {
     private String name;
     private String key;
+    private String newName;
 }
